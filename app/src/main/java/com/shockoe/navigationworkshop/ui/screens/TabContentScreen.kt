@@ -12,12 +12,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RegisterScreen(onNavigate: () -> Unit) {
+fun TabContentScreen(title: String, onNext: (() -> Unit)?, onBack: (() -> Unit)?) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Register Screen", modifier = Modifier.padding(bottom = 10.dp))
-            Button(onClick = { onNavigate() }) {
-                Text(text = "Back")
+            Text(text = title, modifier = Modifier.padding(bottom = 10.dp))
+            onBack?.let {
+                Button(onClick = { it() }) {
+                    Text(text = "Click to go back")
+                }
+            }
+
+            onNext?.let {
+                Button(onClick = { it() }) {
+                    Text(text = "Click to go next")
+                }
             }
         }
     }

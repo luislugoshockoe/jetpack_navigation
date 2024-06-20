@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun LoginScreen(onLoginClick: () -> Unit, onRegisterClick: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = "Login Screen", modifier = Modifier.padding(bottom = 10.dp))
             Button(onClick = { onLoginClick() }) {
                 Text(text = "Click here to Login")

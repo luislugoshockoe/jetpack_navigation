@@ -16,14 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.shockoe.navigationworkshop.AppGraph
-import com.shockoe.navigationworkshop.ui.screens.Home.Tab1Screen
-import com.shockoe.navigationworkshop.ui.screens.Home.Tab2Screen
-import com.shockoe.navigationworkshop.ui.screens.Home.Tab3Screen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -36,17 +35,94 @@ fun MainScreen() {
     ) { _ ->
         NavHost(
             navController = navController,
-            startDestination = AppGraph.MainGraph.initRoute.route
+            startDestination = AppGraph.MainGraph.route
         ) {
-            composable(AppGraph.MainGraph.HomeGraph.Tab1.route) {
-                Tab1Screen()
-            }
-            composable(AppGraph.MainGraph.HomeGraph.Tab2.route) {
-                Tab2Screen()
-            }
-            composable(AppGraph.MainGraph.HomeGraph.Tab3.route) {
-                Tab3Screen()
-            }
+            mainGraph(navController)
+        }
+    }
+}
+
+fun NavGraphBuilder.mainGraph(navController: NavController) {
+    navigation(
+        startDestination = AppGraph.MainGraph.initRoute,
+        route = AppGraph.MainGraph.route
+    ) {
+        homeGraph(navController)
+
+        faceGraph(navController)
+
+        cartGraph(navController)
+    }
+}
+
+fun NavGraphBuilder.homeGraph(navController: NavController) {
+    navigation(
+        startDestination = AppGraph.MainGraph.HomeGraph.initRoute,
+        route = AppGraph.MainGraph.HomeGraph.route
+    ) {
+        composable(AppGraph.MainGraph.HomeGraph.Home.route) {
+            TabContentScreen(
+                title = AppGraph.MainGraph.HomeGraph.Home.title,
+                onNext = {
+                    navController.navigate(AppGraph.MainGraph.HomeGraph.Home1.route)
+                },
+                onBack = null
+            )
+        }
+        composable(AppGraph.MainGraph.HomeGraph.Home1.route) {
+            TabContentScreen(
+                title = AppGraph.MainGraph.HomeGraph.Home1.title,
+                onNext = {
+                    navController.navigate(AppGraph.MainGraph.HomeGraph.Home2.route)
+                },
+                onBack = { navController.navigateUp() }
+            )
+        }
+        composable(AppGraph.MainGraph.HomeGraph.Home2.route) {
+            TabContentScreen(
+                title = AppGraph.MainGraph.HomeGraph.Home2.title,
+                onNext = null,
+                onBack = { navController.navigateUp() }
+            )
+        }
+    }
+}
+
+fun NavGraphBuilder.faceGraph(navController: NavController) {
+    navigation(
+        startDestination = AppGraph.MainGraph.FaceGraph.initRoute,
+        route = AppGraph.MainGraph.FaceGraph.route
+    ) {
+        composable(AppGraph.MainGraph.FaceGraph.Face.route) {
+            TabContentScreen(
+                title = AppGraph.MainGraph.FaceGraph.Face.title,
+                onNext = {
+                    navController.navigate(AppGraph.MainGraph.FaceGraph.Face1.route)
+                },
+                onBack = null
+            )
+        }
+        composable(AppGraph.MainGraph.FaceGraph.Face1.route) {
+            TabContentScreen(
+                title = AppGraph.MainGraph.FaceGraph.Face1.title,
+                onNext = null,
+                onBack = { navController.navigateUp() }
+            )
+        }
+    }
+}
+
+fun NavGraphBuilder.cartGraph(navController: NavController) {
+    navigation(
+        startDestination = AppGraph.MainGraph.CartGraph.initRoute,
+        route = AppGraph.MainGraph.CartGraph.route
+    ) {
+        composable(AppGraph.MainGraph.CartGraph.Cart.route) {
+            TabContentScreen(
+                title = AppGraph.MainGraph.CartGraph.Cart.title,
+                onNext = null,
+                onBack = null
+            )
         }
     }
 }
@@ -55,9 +131,9 @@ fun MainScreen() {
 @Composable
 fun BottomNavigation(navController: NavController) {
     val tabs = listOf(
-        AppGraph.MainGraph.HomeGraph.Tab1,
-        AppGraph.MainGraph.HomeGraph.Tab2,
-        AppGraph.MainGraph.HomeGraph.Tab3,
+        AppGraph.MainGraph.HomeGraph,
+        AppGraph.MainGraph.FaceGraph,
+        AppGraph.MainGraph.CartGraph,
     )
     var selectedItem by remember { mutableStateOf(0) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
